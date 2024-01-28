@@ -1,4 +1,5 @@
 using MongoDBTest.Models;
+using MongoDBTest.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Configure MongoDB settings
 builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBconfig"));
+// Configure Collections services
+builder.Services.AddSingleton<EmployeeService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
