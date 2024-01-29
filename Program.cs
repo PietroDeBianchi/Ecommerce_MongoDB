@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBconfig"));
 // Configure Collections services
 builder.Services.AddSingleton<EmployeeService>();
+builder.Services.AddSingleton<ProductService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

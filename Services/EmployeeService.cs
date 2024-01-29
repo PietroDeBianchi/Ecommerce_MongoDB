@@ -13,7 +13,7 @@ public class EmployeeService
     {
         var mongoClient = new MongoClient(options.Value.ConnectionString);
         var mongoDb = mongoClient.GetDatabase(options.Value.DatabaseName);
-        _employees = mongoDb.GetCollection<Employee>(options.Value.CollectionName);
+        _employees = mongoDb.GetCollection<Employee>(options.Value.CollectionEName);
     }
 
     // GET all employees
