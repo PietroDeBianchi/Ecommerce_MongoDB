@@ -5,6 +5,6 @@ namespace MongoDBTest.Models
         public string? ConnectionString { get; set; }
         public string? DatabaseName { get; set; }
         public string? CollectionEName { get; set; }
-        public string? CollectionCName { get; set; }
+        public string? CollectionPName { get; set; }
     }
 }

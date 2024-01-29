@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using MongoDBTest.Models;
 using MongoDBTest.Services;
-using System;
-using System.Threading.Tasks;
 
 namespace MongoDB.Controllers
 {
