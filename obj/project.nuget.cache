@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0NAvVfOCKEi8NSAV8yaXAQMWs2bMwkxaTSyKgwMSUHs8bx2TA3+X0Yt9OfWJbuQ07JieZ6kOEi+gSY2X5nXb7w==",
+  "dgSpecHash": "qbXqa5DHUwwBi9+1K0zpMgHhhTnbNvk7qoR59l4lRxmcSrCsJ72xtnv1We8pk4zpAelqX4Q+vv0UYvqv8dm4Qw==",
   "success": true,
-  "projectFilePath": "/Users/pietrodebianchi/Desktop/Projects/MongoDBTest/MongoDBTest.csproj",
+  "projectFilePath": "/Users/pietrodebianchi/Desktop/github/Projects ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj",
   "expectedPackageFiles": [
     "/Users/pietrodebianchi/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",

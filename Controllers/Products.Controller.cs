@@ -2,6 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Models;
 using MongoDBTest.Services;
 
+// $lookup {
+//   from: "orderdetail",
+//   localField: "productCode",
+//   foreignField: "productCode",
+//   as: "orderDetails",
+// }
 
 namespace MongoDB.Controllers
 {
