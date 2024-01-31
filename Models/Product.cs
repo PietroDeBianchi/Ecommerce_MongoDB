@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using MongoDBTest.Models;
 
 namespace MongoDBTest.Models
 {
@@ -18,5 +19,6 @@ namespace MongoDBTest.Models
         public int quantityInStock { get; set; }
         public double buyPrice { get; set; }
         public double MSRP { get; set; }
+        public OrderDetail[]? orderDetails { get; set; }
     }
 }

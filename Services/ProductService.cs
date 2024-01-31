@@ -1,12 +1,19 @@
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using MongoDBTest.Models;
+using MongoDB.Bson;
 
 namespace MongoDBTest.Services;
 
 public class ProductService
 {
     private readonly IMongoCollection<Product> _products;
+    private readonly IMongoCollection<OrderDetail>? _orderDetails;
+    public ProductService(IMongoCollection<Product> products, IMongoCollection<OrderDetail> orderDetails)
+    {
+        _products = products;
+        _orderDetails = orderDetails;
+    }
 
     // Constructor to initialize MongoDB connection
     public ProductService(IOptions<DbConfig> options)
@@ -17,7 +24,29 @@ public class ProductService
     }
 
     // GET all employees
-    public async Task<List<Product>> GetAsync() => await  _products.Find(e => true).ToListAsync();
+    public async Task<List<Product>> GetAsync()
+        {
+            // Define the lookup pipeline stage
+            var lookupPipeline = new BsonDocument("$lookup",
+                new BsonDocument
+                {
+                    { "from", "orderdetail" },
+                    { "localField", "productCode" },
+                    { "foreignField", "productCode" },
+                    { "as", "orderDetails" }
+                });
+
+            // Define the aggregation pipeline
+            var pipeline = PipelineDefinition<Product, Product>.Create(new[]
+            {
+                lookupPipeline
+            });
+
+            // Execute the aggregation pipeline
+            var productsWithOrderDetails = await _products.Aggregate(pipeline).ToListAsync();
+
+            return productsWithOrderDetails;
+        }
 
     // GET employee by ID
     public async Task<Product> GetIdAsync(string id) =>
