@@ -23,12 +23,28 @@ namespace MongoDB.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int pageNumber,int itemsPerPage)
         {
             try
             {
+                // Define pagination variables if they are not provided
+                pageNumber = pageNumber == 0 ? 1 : pageNumber;
+                itemsPerPage = itemsPerPage == 0 ? 10 : itemsPerPage;
+                // Define pagination data
                 var allProducts = await _productService.GetAsync();
-                return Ok(allProducts);
+                int totalItems = allProducts.Count;
+                int totaltPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+                // set Pagination headers
+                var result = new PagedResult<Product>
+                {
+                    PageNumber = pageNumber,
+                    ItemsPerPage = itemsPerPage,
+                    TotalItems = totalItems,
+                    TotaltPages = totaltPages,
+                    Items = allProducts.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage)
+                };
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
