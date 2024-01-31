@@ -25,32 +25,60 @@ public class ProductService
 
     // GET all employees
     public async Task<List<Product>> GetAsync()
-        {
-            // Define the lookup pipeline stage
-            var lookupPipeline = new BsonDocument("$lookup",
-                new BsonDocument
-                {
-                    { "from", "orderdetail" },
-                    { "localField", "productCode" },
-                    { "foreignField", "productCode" },
-                    { "as", "orderDetails" }
-                });
-
-            // Define the aggregation pipeline
-            var pipeline = PipelineDefinition<Product, Product>.Create(new[]
+    {
+        // Define the lookup pipeline stage
+        var lookupPipeline = new BsonDocument("$lookup",
+            new BsonDocument
             {
-                lookupPipeline
+                { "from", "orderdetail" },
+                { "localField", "productCode" },
+                { "foreignField", "productCode" },
+                { "as", "orderDetails" }
             });
 
-            // Execute the aggregation pipeline
-            var productsWithOrderDetails = await _products.Aggregate(pipeline).ToListAsync();
+        // Define the aggregation pipeline
+        var pipeline = PipelineDefinition<Product, Product>.Create(new[]
+        {
+            lookupPipeline
+        });
 
-            return productsWithOrderDetails;
-        }
+        // Execute the aggregation pipeline
+        var productsWithOrderDetails = await _products.Aggregate(pipeline).ToListAsync();
+
+        return productsWithOrderDetails;
+    }
 
     // GET employee by ID
-    public async Task<Product> GetIdAsync(string id) =>
-        await  _products.Find(e => e.productCode == id).FirstOrDefaultAsync();
+    public async Task<Product> GetIdAsync(string id)
+    {
+        // Define the match pipeline stage to filter by product code
+        var matchPipeline = PipelineStageDefinitionBuilder.Match<Product>(p => p.productCode == id);
+
+        // Define the lookup pipeline stage
+        var lookupPipeline = new BsonDocument("$lookup",
+            new BsonDocument
+            {
+                { "from", "orderdetail" },
+                { "localField", "productCode" },
+                { "foreignField", "productCode" },
+                { "as", "orderDetails" }
+            });
+
+        // Define the aggregation pipeline
+        var pipeline = PipelineDefinition<Product, Product>.Create(new[]
+        {
+            matchPipeline,
+            lookupPipeline
+        });
+
+        // Execute the aggregation pipeline and get the first matching product
+        var productWithOrderDetails = await _products.Aggregate(pipeline).FirstOrDefaultAsync();
+
+        return productWithOrderDetails;
+    }
+
+
+
 
     // DELETE employee by ID
     public async Task DeleteAsync(string id) =>
