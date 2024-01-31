@@ -24,7 +24,7 @@ public class ProductService
     }
 
     // GET all employees
-    public async Task<List<Product>> GetAsync()
+   public async Task<List<Product>> GetAsync() //  634 ms – 21.97 s  0 – 22.34 s
     {
         // Define the lookup pipeline stage
         var lookupPipeline = new BsonDocument("$lookup",
@@ -47,6 +47,7 @@ public class ProductService
 
         return productsWithOrderDetails;
     }
+
 
     // GET employee by ID
     public async Task<Product> GetIdAsync(string id)
@@ -76,9 +77,6 @@ public class ProductService
 
         return productWithOrderDetails;
     }
-
-
-
 
     // DELETE employee by ID
     public async Task DeleteAsync(string id) =>
