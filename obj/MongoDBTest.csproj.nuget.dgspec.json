@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/pietrodebianchi/Desktop/github/Projects ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj": {}
+    "/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj": {}
   },
   "projects": {
-    "/Users/pietrodebianchi/Desktop/github/Projects ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj": {
+    "/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/pietrodebianchi/Desktop/github/Projects ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj",
+        "projectUniqueName": "/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj",
         "projectName": "MongoDBTest",
-        "projectPath": "/Users/pietrodebianchi/Desktop/github/Projects ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj",
+        "projectPath": "/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj",
         "packagesPath": "/Users/pietrodebianchi/.nuget/packages/",
-        "outputPath": "/Users/pietrodebianchi/Desktop/github/Projects ASP_NET/Ecommerce_MongoDB/obj/",
+        "outputPath": "/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/pietrodebianchi/.nuget/NuGet/NuGet.Config"
