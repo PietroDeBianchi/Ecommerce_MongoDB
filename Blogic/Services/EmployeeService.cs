@@ -6,6 +6,7 @@ namespace MongoDBTest.Blogic.Services;
 
 public class EmployeeService
 {
+    // Declare private fields for MongoDB collections
     private readonly IMongoCollection<Employee> _employees;
 
     // Constructor to initialize MongoDB connection

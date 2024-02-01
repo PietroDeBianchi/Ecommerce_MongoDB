@@ -1,16 +1,18 @@
+// Import necessary namespaces
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using MongoDBTest.Models;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 
 namespace MongoDBTest.Blogic.Services;
 
-
 public class ProductService
 {
+    // Declare private fields for MongoDB collections
     private readonly IMongoCollection<Product> _products;
     private readonly IMongoCollection<OrderDetail>? _orderDetails;
+
+    // Constructor to initialize MongoDB collections
     public ProductService(IMongoCollection<Product> products, IMongoCollection<OrderDetail> orderDetails)
     {
         _products = products;
@@ -20,13 +22,16 @@ public class ProductService
     // Constructor to initialize MongoDB connection
     public ProductService(IOptions<DbConfig> options)
     {
+        // Create a new MongoDB client
         var mongoClient = new MongoClient(options.Value.ConnectionString);
+        // Get the specified database
         var mongoDb = mongoClient.GetDatabase(options.Value.DatabaseName);
+        // Get the specified collection
         _products = mongoDb.GetCollection<Product>(options.Value.CollectionPName);
     }
 
-    // GET all employees
-   public async Task<List<Product>> GetAsync() 
+    // GET all products
+    public async Task<List<Product>> GetAsync() 
     {
         // Define the lookup pipeline stage
         var lookupPipeline = new BsonDocument("$lookup",
@@ -50,8 +55,7 @@ public class ProductService
         return productsWithOrderDetails;
     }
 
-
-    // GET employee by ID
+    // GET product by ID
     public async Task<Product> GetIdAsync(string id)
     {
         // Define the match pipeline stage to filter by product code
@@ -115,7 +119,7 @@ public class ProductService
         await _products.ReplaceOneAsync(e => e.productCode == product.productCode, product);
     }
 
-    // DELETE employee by ID
+    // DELETE product by ID
     public async Task DeleteAsync(string id)
     {
         // Check if product already exists and throw exception if it does
@@ -123,5 +127,4 @@ public class ProductService
         // Delete product
         await _products.DeleteOneAsync(e => e.productCode == id);
     }
-
 }

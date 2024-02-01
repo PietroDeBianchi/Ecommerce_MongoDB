@@ -1,106 +1,69 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
 
+namespace MongoDB.Controllers;
 
-namespace MongoDB.Controllers
+[ApiController]
+[Route("[controller]")]
+public class EmployeesController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class EmployeesController : ControllerBase
+    // EmployeeService instance
+    private readonly EmployeeService _employeeService;
+
+    // Constructor for the EmployeesController
+    public EmployeesController(EmployeeService employeeService)
     {
-        private readonly EmployeeService _employeeService;
+        // If employeeService is null, throw an exception
+        _employeeService = employeeService ?? throw new ArgumentNullException(nameof(employeeService));
+    }
 
-        public EmployeesController(EmployeeService employeeService)
+    // HTTP GET method to get a list of all employees
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        try
         {
-            _employeeService = employeeService ?? throw new ArgumentNullException(nameof(employeeService));
+            // Get all employees from the service
+            var allEmployees = await _employeeService.GetAsync();
+
+            // If no employees are found, return No Content status
+            if (allEmployees == null)
+                return NoContent(); // 204 No Content
+
+            // If employees are found, return them with OK status
+            return Ok(allEmployees);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        catch (Exception ex)
         {
-            try
-            {
-                var allEmployees = await _employeeService.GetAsync();
-                return Ok(allEmployees);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            try
-            {
-                var employee = await _employeeService.GetIdAsync(id);
-                if (employee == null)
-                    return NotFound();
-
-                return Ok(employee);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                var existingEmployee = await _employeeService.GetIdAsync(id);
-
-                if (existingEmployee == null)
-                    return NotFound();
-
-                await _employeeService.DeleteAsync(id);
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post(Employee employee)
-        {
-            try
-            {
-                await _employeeService.CreateAsync(employee);
-                return CreatedAtAction(nameof(GetById), new { id = employee.employeeNumber }, employee);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Employee employee)
-        {
-            try
-            {
-                var existingEmployee = await _employeeService.GetIdAsync(id);
-
-                if (existingEmployee == null)
-                    return NotFound();
-
-                employee.Id = existingEmployee.Id;
-
-                await _employeeService.UpDateAsync(employee);
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            // If an error occurs, return Internal Server Error status with the error message
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
+    // HTTP GET method to get an employee by its ID
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        try
+        {
+            // Get the employee from the service
+            var employee = await _employeeService.GetIdAsync(id);
+
+            // If the employee is not found, return Not Found status
+            if (employee == null)
+                return NotFound(); // 404 Not Found
+
+            // If the employee is found, return it with OK status
+            return Ok(employee);
+        }
+        catch (Exception ex)
+        {
+            // If an error occurs, return Internal Server Error status with the error message
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 }
+
+
+
