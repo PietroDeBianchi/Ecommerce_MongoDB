@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Models;
-using MongoDBTest.Services;
+using MongoDBTest.Blogic.Services;
 
 // $lookup {
 //   from: "orderdetail",
@@ -75,10 +75,6 @@ namespace MongoDB.Controllers
             try
             {
                 var existingProduct = await _productService.GetIdAsync(id);
-
-                if (existingProduct == null)
-                    return NotFound();
-
                 await _productService.DeleteAsync(id);
 
                 return NoContent();
@@ -108,15 +104,7 @@ namespace MongoDB.Controllers
         {
             try
             {
-                var existingProduct = await _productService.GetIdAsync(id);
-
-                if (existingProduct == null)
-                    return NotFound();
-
-                product.Id = existingProduct.Id;
-
-                await _productService.UpDateAsync(product);
-
+                await _productService.UpDateAsync(id, product);
                 return NoContent();
             }
             catch (Exception ex)

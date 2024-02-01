@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Models;
-using MongoDBTest.Services;
+using MongoDBTest.Blogic.Services;
+
 
 namespace MongoDB.Controllers
 {

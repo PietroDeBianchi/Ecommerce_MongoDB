@@ -1,5 +1,5 @@
 using MongoDBTest.Models;
-using MongoDBTest.Services;
+using MongoDBTest.Blogic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

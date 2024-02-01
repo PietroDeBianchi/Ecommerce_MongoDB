@@ -2,7 +2,7 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using MongoDBTest.Models;
 
-namespace MongoDBTest.Services;
+namespace MongoDBTest.Blogic.Services;
 
 public class EmployeeService
 {

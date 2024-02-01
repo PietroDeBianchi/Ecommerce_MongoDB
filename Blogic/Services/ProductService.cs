@@ -2,8 +2,10 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using MongoDBTest.Models;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 
-namespace MongoDBTest.Services;
+namespace MongoDBTest.Blogic.Services;
+
 
 public class ProductService
 {
@@ -24,7 +26,7 @@ public class ProductService
     }
 
     // GET all employees
-   public async Task<List<Product>> GetAsync() //  634 ms – 21.97 s  0 – 22.34 s
+   public async Task<List<Product>> GetAsync() 
     {
         // Define the lookup pipeline stage
         var lookupPipeline = new BsonDocument("$lookup",
@@ -78,16 +80,48 @@ public class ProductService
         return productWithOrderDetails;
     }
 
+    // POST new product
+    public async Task CreateAsync(Product product)
+    {
+        // Check if product already exists and throw exception if it does
+        var existingProduct = await _products.Find(p => p.productCode == product.productCode).FirstOrDefaultAsync();
+        if (existingProduct != null)
+            throw new Exception("Product already exists");
+
+        // Set default values for new product
+        product.Id = ObjectId.GenerateNewId();
+        product.orderDetails = null;
+        // Insert new product
+        await _products.InsertOneAsync(product);
+    }
+
+    // PUT (update) product by ID
+    public async Task UpDateAsync(string id, Product product)
+    {
+        // Check if product already exists and throw exception if it does
+        var existingProduct = await _products.Find(e => e.productCode == id).FirstOrDefaultAsync();
+        if (existingProduct != null)
+        {
+            // Set default values for product
+            product.Id = existingProduct.Id;
+            product.productCode = existingProduct.productCode;
+            product.orderDetails = existingProduct.orderDetails;
+        }
+        else
+        {
+            throw new Exception("Product not found");
+        }
+        // Update product
+        await _products.ReplaceOneAsync(e => e.productCode == product.productCode, product);
+    }
+
     // DELETE employee by ID
-    public async Task DeleteAsync(string id) =>
-        await  _products.DeleteOneAsync(e => e.productCode == id);
-
-    // POST new employee
-    public async Task CreateAsync(Product product) =>
-        await  _products.InsertOneAsync(product);
-
-    // PUT (update) employee by ID
-    public async Task UpDateAsync(Product product) =>
-        await  _products.ReplaceOneAsync(e => e.productCode == product.productCode, product);
+    public async Task DeleteAsync(string id)
+    {
+        // Check if product already exists and throw exception if it does
+        var product = await _products.Find(p => p.productCode == id).FirstOrDefaultAsync() ?? throw new Exception("Product not found");
+        // Delete product
+        await _products.DeleteOneAsync(e => e.productCode == id);
+    }
 
 }
