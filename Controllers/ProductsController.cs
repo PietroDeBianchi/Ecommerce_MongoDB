@@ -25,6 +25,7 @@ public class ProductsController : ControllerBase
     {
         try
         {
+            // Get all product from the service and paginate them
             var allUsers = await _productService.GetAsync();
             var result = PaginationHelper.Paginate(allUsers, pageNumber, itemsPerPage);
 

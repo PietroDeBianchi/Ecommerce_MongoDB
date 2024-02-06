@@ -25,6 +25,7 @@ public class OrdersController : ControllerBase
     {
         try
         {
+            // Get all orders from the service and paginate them
             var allUsers = await _orderService.GetAsync();
             var result = PaginationHelper.Paginate(allUsers, pageNumber, itemsPerPage);
 

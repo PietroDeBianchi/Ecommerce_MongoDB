@@ -21,6 +21,7 @@ public class UsersController : ControllerBase
     {
         try
         {
+            // Get all users from the service and paginate them
             var allUsers = await _userService.GetAsync();
             var result = PaginationHelper.Paginate(allUsers, pageNumber, itemsPerPage);
 
@@ -34,6 +35,31 @@ public class UsersController : ControllerBase
             // If an error occurs, return Internal Server Error status with the error message
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(User user)
+    {
+        var registeredUser = await _userService.Register(user);
+        return Ok(registeredUser);
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(string email, string password)
+    {
+        var token = await _userService.Login(email, password);
+        if (token == null)
+        {
+            return Unauthorized();
+        }
+        return Ok(new { Token = token });
+    }
+
+    [HttpPost("logout")]
+    public Task<IActionResult> Logout(string token)
+    {
+        var result = _userService.Logout(token);
+        throw new NotImplementedException();
     }
 
 }
