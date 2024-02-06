@@ -44,19 +44,41 @@ public class OrderService
     }
 
     // GET order by ID
-    public async Task<Order> GetIdAsync(int id) =>
-        await _orders.Find(e => e.orderNumber == id).FirstOrDefaultAsync();
+    public async Task<Order> GetIdAsync(long id)
+    {
+        // Define the match pipeline stage to filter by product code
+        var matchPipeline = PipelineStageDefinitionBuilder.Match<Order>(o => o.orderNumber == id);
+
+        // Define the lookup pipeline stage
+        var lookupPipeline = new BsonDocument("$lookup",
+            new BsonDocument
+            {
+                { "from", "orderdetail" },
+                { "localField", "orderNumber" },
+                { "foreignField", "orderNumber" },
+                { "as", "orderDetails" }
+            });
+
+        // Define the aggregation pipeline
+        var pipeline = PipelineDefinition<Order, Order>.Create(new[]
+        {
+            matchPipeline,
+            lookupPipeline
+        });
+
+        // Execute the aggregation pipeline and get the first matching product
+        var orderWithDetails = await _orders.Aggregate(pipeline).FirstOrDefaultAsync();
+
+        return orderWithDetails;
+    }
 
     // DELETE order by ID
-    public async Task DeleteAsync(int id) =>
-        await _orders.DeleteOneAsync(e => e.orderNumber == id);
+    public async Task DeleteAsync(int id) => await _orders.DeleteOneAsync(e => e.orderNumber == id);
 
     // POST new order
-    public async Task CreateAsync(Order order) =>
-        await _orders.InsertOneAsync(order);
+    public async Task CreateAsync(Order order) => await _orders.InsertOneAsync(order);
 
     // PUT (update) order by ID
-    public async Task UpDateAsync(Order order) =>
-        await _orders.ReplaceOneAsync(e => e.orderNumber == order.orderNumber, order);
+    public async Task UpDateAsync(Order order) => await _orders.ReplaceOneAsync(e => e.orderNumber == order.orderNumber, order);
 
 }

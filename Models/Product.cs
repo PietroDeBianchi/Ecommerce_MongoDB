@@ -17,7 +17,5 @@ namespace MongoDBTest.Models
         public int quantityInStock { get; set; }
         public double buyPrice { get; set; }
         public double MSRP { get; set; }
-        [BsonIgnoreIfNull]
-        public OrderDetail[]? orderDetails { get; set; }
     }
 }

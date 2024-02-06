@@ -10,13 +10,10 @@ public class ProductService
 {
     // Declare private fields for MongoDB collections
     private readonly IMongoCollection<Product> _products;
-    private readonly IMongoCollection<OrderDetail>? _orderDetails;
-
     // Constructor to initialize MongoDB collections
-    public ProductService(IMongoCollection<Product> products, IMongoCollection<OrderDetail> orderDetails)
+    public ProductService(IMongoCollection<Product> products)
     {
         _products = products;
-        _orderDetails = orderDetails;
     }
 
     // Constructor to initialize MongoDB connection
@@ -31,58 +28,10 @@ public class ProductService
     }
 
     // GET all products
-    public async Task<List<Product>> GetAsync() 
-    {
-        // Define the lookup pipeline stage
-        var lookupPipeline = new BsonDocument("$lookup",
-            new BsonDocument
-            {
-                { "from", "orderdetail" },
-                { "localField", "productCode" },
-                { "foreignField", "productCode" },
-                { "as", "orderDetails" }
-            });
-
-        // Define the aggregation pipeline
-        var pipeline = PipelineDefinition<Product, Product>.Create(new[]
-        {
-            lookupPipeline
-        });
-
-        // Execute the aggregation pipeline
-        var productsWithOrderDetails = await _products.Aggregate(pipeline).ToListAsync();
-
-        return productsWithOrderDetails;
-    }
-
+    public async Task<List<Product>> GetAsync() => await _products.Find(p => true).ToListAsync();
+    
     // GET product by ID
-    public async Task<Product> GetIdAsync(string id)
-    {
-        // Define the match pipeline stage to filter by product code
-        var matchPipeline = PipelineStageDefinitionBuilder.Match<Product>(p => p.productCode == id);
-
-        // Define the lookup pipeline stage
-        var lookupPipeline = new BsonDocument("$lookup",
-            new BsonDocument
-            {
-                { "from", "orderdetail" },
-                { "localField", "productCode" },
-                { "foreignField", "productCode" },
-                { "as", "orderDetails" }
-            });
-
-        // Define the aggregation pipeline
-        var pipeline = PipelineDefinition<Product, Product>.Create(new[]
-        {
-            matchPipeline,
-            lookupPipeline
-        });
-
-        // Execute the aggregation pipeline and get the first matching product
-        var productWithOrderDetails = await _products.Aggregate(pipeline).FirstOrDefaultAsync();
-
-        return productWithOrderDetails;
-    }
+    public async Task<Product> GetIdAsync(string id) => await _products.Find(p => p.productCode == id).FirstOrDefaultAsync();
 
     // POST new product
     public async Task CreateAsync(Product product)
@@ -94,7 +43,6 @@ public class ProductService
 
         // Set default values for new product
         product.Id = ObjectId.GenerateNewId();
-        product.orderDetails = null;
         // Insert new product
         await _products.InsertOneAsync(product);
     }
@@ -109,7 +57,6 @@ public class ProductService
             // Set default values for product
             product.Id = existingProduct.Id;
             product.productCode = existingProduct.productCode;
-            product.orderDetails = existingProduct.orderDetails;
         }
         else
         {
