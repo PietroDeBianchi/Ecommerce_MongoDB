@@ -2,6 +2,9 @@
 using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
 using MongoDBTest.Blogic.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 // Create a new WebApplication builder with the provided command-line arguments
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +12,28 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Add the MVC Controllers service to the DI container
 builder.Services.AddControllers();
+
+//builder.Services.AddAuthentication();
+
+//builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(o => {
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true
+            };
+        });
+
 
 // Configure MongoDB settings
 // Get the MongoDB configuration from appsettings.json and bind it to DbConfig
@@ -25,6 +50,7 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 // Build the application
 var app = builder.Build();
 
@@ -39,6 +65,9 @@ if (app.Environment.IsDevelopment())
 
 // Redirect HTTP requests to HTTPS
 app.UseHttpsRedirection();
+
+// Use the authentication middleware in the pipeline
+app.UseAuthentication();
 
 // Use the authorization middleware in the pipeline
 app.UseAuthorization();

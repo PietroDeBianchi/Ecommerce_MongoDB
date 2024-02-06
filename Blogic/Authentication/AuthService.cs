@@ -38,6 +38,12 @@ public class UserService
     {
         // Hash the user's password
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        if (user.EmployeeNumber != null)
+            // Add the admin role to the user
+            user.IsAdmin = true;
+        if (user.CustomerNumber != null)
+            // Add the user role to the user
+            user.IsAdmin = false;
         // Save the user to the database
         await _users.InsertOneAsync(user);
         return user;

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "pBD67JRGyO17UJC/eZAUx6RYo1H/WXQog7goV0Ep9dkypyJlX6wYLMw0tKVZCCXfrMlgtfiKmlMQNOjvZoMYOA==",
+  "dgSpecHash": "BFwQ6OHyaTOBekrbcAfV4U3wYyMhbrePcgtZnHuJZn4mzeodZaAaAr0ySFmtmrHujFvy0ySnilZ5N3pgNd1FFA==",
   "success": true,
   "projectFilePath": "/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/MongoDBTest.csproj",
   "expectedPackageFiles": [
@@ -8,12 +8,15 @@
     "/Users/pietrodebianchi/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
+    "/Users/pietrodebianchi/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/6.0.0/microsoft.aspnetcore.authentication.jwtbearer.6.0.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.aspnetcore.openapi/7.0.1/microsoft.aspnetcore.openapi.7.0.1.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.identitymodel.abstractions/7.3.0/microsoft.identitymodel.abstractions.7.3.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.identitymodel.jsonwebtokens/7.3.0/microsoft.identitymodel.jsonwebtokens.7.3.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.identitymodel.logging/7.3.0/microsoft.identitymodel.logging.7.3.0.nupkg.sha512",
+    "/Users/pietrodebianchi/.nuget/packages/microsoft.identitymodel.protocols/6.10.0/microsoft.identitymodel.protocols.6.10.0.nupkg.sha512",
+    "/Users/pietrodebianchi/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/6.10.0/microsoft.identitymodel.protocols.openidconnect.6.10.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.identitymodel.tokens/7.3.0/microsoft.identitymodel.tokens.7.3.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "/Users/pietrodebianchi/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",

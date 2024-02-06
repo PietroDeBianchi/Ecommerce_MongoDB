@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
 using MongoDB.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MongoDB.Controllers;
 
@@ -65,6 +66,7 @@ public class ProductsController : ControllerBase
     }
 
     // HTTP DELETE method to delete a product by its ID
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
@@ -87,8 +89,9 @@ public class ProductsController : ControllerBase
     }
 
     // HTTP POST method to create a new product
+    [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> Post(Product product)
+    public async Task<IActionResult> Post([FromBody] Product product)
     {
         try
         {
@@ -106,8 +109,9 @@ public class ProductsController : ControllerBase
     }
 
     // HTTP PUT method to update an existing product
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(string id, Product product)
+    public async Task<IActionResult> Put(string id,[FromBody] Product product)
     {
         try
         {
