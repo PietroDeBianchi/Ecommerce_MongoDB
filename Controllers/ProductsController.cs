@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
+using MongoDB.Utilities;
 
 namespace MongoDB.Controllers;
 
@@ -24,32 +25,11 @@ public class ProductsController : ControllerBase
     {
         try
         {
-            // If pageNumber or itemsPerPage are not provided, set default values
-            pageNumber = pageNumber == 0 ? 1 : pageNumber;
-            itemsPerPage = itemsPerPage == 0 ? 10 : itemsPerPage;
+            var allUsers = await _productService.GetAsync();
+            var result = PaginationHelper.Paginate(allUsers, pageNumber, itemsPerPage);
 
-            // Get all products from the service
-            var allProducts = await _productService.GetAsync();
-            int totalItems = allProducts.Count;
-
-            // If no products are found, return No Content status
-            if (totalItems <= 0)
-                return NoContent(); // 204 No Content
-
-            // Calculate the total number of pages
-            int totaltPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
-
-            // Create a PagedResult object with the pagination data and the products for the current page
-            var result = new PagedResult<Product>
-            {
-                PageNumber = pageNumber,
-                ItemsPerPage = itemsPerPage,
-                TotalItems = totalItems,
-                TotaltPages = totaltPages,
-                // Skip the products of the previous pages and take the products for the current page
-                Items = allProducts.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage)
-            };
-
+            if (result == null)
+                return NoContent();
             // Return the result with OK status
             return Ok(result);
         }
