@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MongoDBTest.Blogic.Authentication;
+using MongoDBTest.Models;
 
 namespace MongoDB.Blogic.Authentication;
 
@@ -18,46 +19,45 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost("register")]
-    public ActionResult<User> Register(User user)
+    [HttpGet]
+    public async Task<IActionResult> Get(int pageNumber,int itemsPerPage)
     {
-        _userService.Register(user);
-        return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
-    }
+        try
+        {
+            // If pageNumber or itemsPerPage are not provided, set default values
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            itemsPerPage = itemsPerPage == 0 ? 10 : itemsPerPage;
 
-    [HttpPost("login")]
-    public IActionResult Login(User userParam)
-    {
-        User user = userParam;
+            // Get all users from the service
+            var allUsers = await _userService.GetAsync();
+            int totalItems = allUsers.Count;
 
-        if (userParam != null && userParam.Email != null && userParam.Password != null)
-        {
-            user = _userService.Authenticate(userParam.Email, userParam.Password);
-        }
-        else
-        {
-            // Handle the case where userParams or its properties are null
-            return BadRequest("Invalid user parameters");
-        }
-        // Generate JWT token
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes("YOUR_SECRET_KEY");
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[] 
+            // If no users are found, return No Content status
+            if (totalItems <= 0)
+                return NoContent(); // 204 No Content
+
+            // Calculate the total number of pages
+            int totaltPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            // Create a PagedResult object with the pagination data and the products for the current page
+            var result = new PagedResult<User>
             {
-                new Claim(ClaimTypes.Name, user.Id.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        var tokenString = tokenHandler.WriteToken(token);
+                PageNumber = pageNumber,
+                ItemsPerPage = itemsPerPage,
+                TotalItems = totalItems,
+                TotaltPages = totaltPages,
+                // Skip the users of the previous pages and take the products for the current page
+                Items = allUsers.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage)
+            };
 
-        return Ok(new {
-            Id = user.Id,
-            Email = user.Email,
-            Token = tokenString
-        });
+            // Return the result with OK status
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            // If an error occurs, return Internal Server Error status with the error message
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
+
 }

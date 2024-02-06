@@ -1,6 +1,7 @@
 // Import necessary namespaces
 using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
+using MongoDBTest.Blogic.Authentication;
 
 // Create a new WebApplication builder with the provided command-line arguments
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBco
 builder.Services.AddSingleton<EmployeeService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<OrderService>();
+builder.Services.AddSingleton<UserService>();
 
 // Add services to enable API exploration and Swagger/OpenAPI generation
 builder.Services.AddEndpointsApiExplorer();

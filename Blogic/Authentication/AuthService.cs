@@ -9,8 +9,13 @@ namespace MongoDBTest.Blogic.Authentication;
 public class UserService
 {
     private readonly IMongoCollection<User> _users;
+    // Constructor to initialize MongoDB collections
+    public UserService(IMongoCollection<User> user)
+    {
+        _users = user;
+    }
 
-     public UserService(IOptions<DbConfig> options)
+    public UserService(IOptions<DbConfig> options)
     {
         // Create a new MongoDB client
         var mongoClient = new MongoClient(options.Value.ConnectionString);
@@ -20,24 +25,6 @@ public class UserService
         _users = mongoDb.GetCollection<User>(options.Value.Databases.Authentication.Collections.Users);
     }
 
-    public User Register(User user)
-    {
-        // Hash the password before saving the user to the database
-        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        _users.InsertOne(user);
-        return user;
-    }
-
-    public User Authenticate(string email, string password)
-    {
-        var user = _users.Find(user => user.Email == email).FirstOrDefault();
-
-        // Verify the password
-        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
-        {
-            throw new Exception("User not found o data invalid"); ;
-        }
-
-        return user;
-    }
+    // GET all users
+    public async Task<List<User>> GetAsync() => await _users.Find(p => true).ToListAsync();
 }
