@@ -15,9 +15,9 @@ public class UserService
         // Create a new MongoDB client
         var mongoClient = new MongoClient(options.Value.ConnectionString);
         // Get the specified database
-        var mongoDb = mongoClient.GetDatabase(options.Value.DatabaseName);
+        var mongoDb = mongoClient.GetDatabase(options.Value.Databa2seName);
         // Get the specified collection
-        _users = mongoDb.GetCollection<User>(options.Value.CollectionPName);
+        _users = mongoDb.GetCollection<User>(options.Value.CollectionUName);
     }
 
     public User Register(User user)
