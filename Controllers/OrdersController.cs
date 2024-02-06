@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Blogic.Services;
+using MongoDBTest.Models;
 
 namespace MongoDB.Controllers;
 
@@ -19,19 +20,38 @@ public class OrdersController : ControllerBase
 
     // HTTP GET method to get a list of all orders
     [HttpGet]
-    public async Task<IActionResult> Get()
+   public async Task<IActionResult> Get(int pageNumber,int itemsPerPage)
     {
         try
         {
-            // Get all orders from the service
-            var allOrders = await _orderService.GetAsync();
+            // If pageNumber or itemsPerPage are not provided, set default values
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            itemsPerPage = itemsPerPage == 0 ? 10 : itemsPerPage;
 
-            // If no orders are found, return No Content status
-            if (allOrders == null)
+            // Get all products from the service
+            var allOrders = await  _orderService.GetAsync();
+            int totalItems = allOrders.Count;
+
+            // If no products are found, return No Content status
+            if (totalItems <= 0)
                 return NoContent(); // 204 No Content
 
-            // If orders are found, return them with OK status
-            return Ok(allOrders);
+            // Calculate the total number of pages
+            int totaltPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            // Create a PagedResult object with the pagination data and the products for the current page
+            var result = new PagedResult<Order>
+            {
+                PageNumber = pageNumber,
+                ItemsPerPage = itemsPerPage,
+                TotalItems = totalItems,
+                TotaltPages = totaltPages,
+                // Skip the products of the previous pages and take the products for the current page
+                Items = allOrders.Skip((pageNumber - 1) * itemsPerPage).Take(itemsPerPage)
+            };
+
+            // Return the result with OK status
+            return Ok(result);
         }
         catch (Exception ex)
         {

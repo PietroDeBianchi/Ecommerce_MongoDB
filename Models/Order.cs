@@ -17,6 +17,7 @@ namespace MongoDBTest.Models
         public string? status { get; set; }
         public string? comments { get; set; }
         public int customerNumber { get; set; }
-
+        [BsonIgnoreIfNull]
+        public OrderDetail[]? orderDetails { get; set; }
     }
 }

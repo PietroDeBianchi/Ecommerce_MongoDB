@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using MongoDBTest.Models;
+using MongoDB.Bson;
 
 namespace MongoDBTest.Blogic.Services;
 
@@ -18,7 +19,29 @@ public class OrderService
     }
 
     // GET all orders
-    public async Task<List<Order>> GetAsync() => await _orders.Find(e => true).ToListAsync();
+    public async Task<List<Order>> GetAsync() 
+    {
+        // Define the lookup pipeline stage
+        var lookupPipeline = new BsonDocument("$lookup",
+            new BsonDocument
+            {
+                { "from", "orderdetail" },
+                { "localField", "orderNumber" },
+                { "foreignField", "orderNumber" },
+                { "as", "orderDetails" }
+            });
+
+        // Define the aggregation pipeline
+        var pipeline = PipelineDefinition<Order, Order>.Create(new[]
+        {
+            lookupPipeline
+        });
+
+        // Execute the aggregation pipeline
+        var orderWithDetails = await _orders.Aggregate(pipeline).ToListAsync();
+
+        return orderWithDetails;
+    }
 
     // GET order by ID
     public async Task<Order> GetIdAsync(int id) =>

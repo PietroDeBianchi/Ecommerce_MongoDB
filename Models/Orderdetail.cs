@@ -14,7 +14,5 @@ namespace MongoDBTest.Models
         public double quantityOrdered { get; set; }
         public double priceEach { get; set; }
         public int orderLineNumber { get; set; }
-        [BsonIgnoreIfNull]
-        public Order[]? order { get; set; }
     }
 }
