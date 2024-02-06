@@ -20,6 +20,7 @@ public class ProductsController : ControllerBase
         _productService = productService ?? throw new ArgumentNullException(nameof(productService));
     }
 
+    [Authorize(Roles = "Admin")]
     // HTTP GET method to get a list of products with pagination
     [HttpGet]
     public async Task<IActionResult> Get(int pageNumber,int itemsPerPage)

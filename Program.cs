@@ -50,9 +50,19 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+// to add for CORS Policy access!
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy",
+        builder => builder
+        .AllowAnyMethod()
+        .AllowAnyOrigin()
+        .AllowAnyHeader());
+});
 // Build the application
 var app = builder.Build();
+
+app.UseCors("CorsPolicy");
 
 // Configure the HTTP request pipeline.
 // If the application is in the development environment
