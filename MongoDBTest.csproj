@@ -18,32 +18,3 @@
 
 </Project>
 
-// Package references and their purposes:
-
-// BCrypt.Net-Next (Version 4.0.3):
-//  - Securely hashes passwords using the bcrypt algorithm.
-//  - Incorporates salting for enhanced security.
-//  - Allows adjusting the cost factor for hashing difficulty.
-
-// Microsoft.AspNetCore.OpenApi (Version 7.0.1):
-//  - Generates OpenAPI (Swagger) specifications for the web API.
-//  - Enables interactive documentation and testing of APIs.
-
-// Microsoft.IdentityModel.Tokens (Version 7.3.0):
-//  - Provides classes for working with security tokens, including JWTs.
-//  - Facilitates authentication and authorization scenarios.
-
-// MongoDB.Driver (Version 2.19.0):
-//  - Enables interaction with MongoDB databases from the application.
-//  - Provides a .NET driver for connecting to MongoDB servers.
-//  - Supports CRUD operations, querying, indexing, and aggregations.
-
-// Swashbuckle.AspNetCore (Version 6.4.0):
-//  - Enhances OpenAPI/Swagger documentation for the web API.
-//  - Generates user-friendly interactive documentation.
-//  - Allows testing APIs directly within the documentation.
-
-// System.IdentityModel.Tokens.Jwt (Version 7.3.0):
-//  - Provides support for JSON Web Tokens (JWTs) in the application.
-//  - Enables secure token-based authentication and authorization.
-

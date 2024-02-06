@@ -92,3 +92,9 @@
 /Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/obj/Debug/net7.0/MongoDBTest.pdb
 /Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/obj/Debug/net7.0/MongoDBTest.genruntimeconfig.cache
 /Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/obj/Debug/net7.0/ref/MongoDBTest.dll
+/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/bin/Debug/net7.0/BCrypt.Net-Next.dll
+/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/bin/Debug/net7.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/bin/Debug/net7.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/bin/Debug/net7.0/Microsoft.IdentityModel.Logging.dll
+/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/bin/Debug/net7.0/Microsoft.IdentityModel.Tokens.dll
+/Users/pietrodebianchi/Desktop/github/Projects_ASP_NET/Ecommerce_MongoDB/bin/Debug/net7.0/System.IdentityModel.Tokens.Jwt.dll
