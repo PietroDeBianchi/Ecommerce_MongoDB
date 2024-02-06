@@ -22,9 +22,9 @@ public class ProductService
         // Create a new MongoDB client
         var mongoClient = new MongoClient(options.Value.ConnectionString);
         // Get the specified database
-        var mongoDb = mongoClient.GetDatabase(options.Value.DatabaseName);
+        var mongoDb = mongoClient.GetDatabase(options.Value.Databases.Ecommerce.Name);
         // Get the specified collection
-        _products = mongoDb.GetCollection<Product>(options.Value.CollectionPName);
+        _products = mongoDb.GetCollection<Product>(options.Value.Databases.Ecommerce.Collections.Products);
     }
 
     // GET all products

@@ -13,8 +13,8 @@ public class EmployeeService
     public EmployeeService(IOptions<DbConfig> options)
     {
         var mongoClient = new MongoClient(options.Value.ConnectionString);
-        var mongoDb = mongoClient.GetDatabase(options.Value.DatabaseName);
-        _employees = mongoDb.GetCollection<Employee>(options.Value.CollectionEName);
+        var mongoDb = mongoClient.GetDatabase(options.Value.Databases.Ecommerce.Name);
+        _employees = mongoDb.GetCollection<Employee>(options.Value.Databases.Ecommerce.Collections.Employees);
     }
 
     // GET all employees

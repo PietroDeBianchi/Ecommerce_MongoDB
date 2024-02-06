@@ -14,8 +14,8 @@ public class OrderService
     public OrderService(IOptions<DbConfig> options)
     {
         var mongoClient = new MongoClient(options.Value.ConnectionString);
-        var mongoDb = mongoClient.GetDatabase(options.Value.DatabaseName);
-        _orders = mongoDb.GetCollection<Order>(options.Value.CollectionOName);
+        var mongoDb = mongoClient.GetDatabase(options.Value.Databases.Ecommerce.Name);
+        _orders = mongoDb.GetCollection<Order>(options.Value.Databases.Ecommerce.Collections.Orders);
     }
 
     // GET all orders
