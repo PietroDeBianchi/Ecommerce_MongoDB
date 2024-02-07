@@ -13,9 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add the MVC Controllers service to the DI container
 builder.Services.AddControllers();
 
-//builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
-//builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -33,7 +32,7 @@ builder.Services.AddAuthentication(options =>
                 ValidateIssuerSigningKey = true
             };
         });
-
+Console.WriteLine(builder.Configuration["Jwt:Key"]);
 
 // Configure MongoDB settings
 // Get the MongoDB configuration from appsettings.json and bind it to DbConfig

@@ -4,7 +4,7 @@ using MongoDBTest.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using System.Security.Cryptography;
+using System.Text;
 
 namespace MongoDBTest.Blogic.Authentication;
 
@@ -12,15 +12,18 @@ public class UserService
 {
     // _users is a MongoDB collection that contains the users.
     private readonly IMongoCollection<User> _users;
+    private readonly IConfiguration _configuration;
+
 
     // This constructor initializes the MongoDB collection with the one provided.
-    public UserService(IMongoCollection<User> user)
+    public UserService(IMongoCollection<User> user, IConfiguration configuration)
     {
         _users = user;
+        _configuration = configuration;
     }
 
     // This constructor initializes the MongoDB collection using the provided configuration options.
-    public UserService(IOptions<DbConfig> options)
+    public UserService(IOptions<DbConfig> options, IConfiguration configuration)
     {
         // Create a new MongoDB client
         var mongoClient = new MongoClient(options.Value.ConnectionString);
@@ -28,6 +31,8 @@ public class UserService
         var mongoDb = mongoClient.GetDatabase(options.Value.Databases.Authentication.Name);
         // Get the specified collection
         _users = mongoDb.GetCollection<User>(options.Value.Databases.Authentication.Collections.Users);
+        // Add the configuration
+        _configuration = configuration;
     }
 
     // This method returns all users.
@@ -39,11 +44,17 @@ public class UserService
         // Hash the user's password
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         if (user.EmployeeNumber != null)
+        {
             // Add the admin role to the user
             user.IsAdmin = true;
-        if (user.CustomerNumber != null)
+            user.CustomerNumber = null;
+        }
+        else
+        {
             // Add the user role to the user
             user.IsAdmin = false;
+            user.EmployeeNumber = null;
+        }
         // Save the user to the database
         await _users.InsertOneAsync(user);
         return user;
@@ -59,8 +70,10 @@ public class UserService
         {
             throw new Exception("Invalid email or password");
         }
+        // Get the secret key from the configuration
+        var secretKey = _configuration["Jwt:Key"] ?? throw new Exception("Secret key is missing");
         // Generate a JWT and return it
-        return GenerateJwt(user);
+        return GenerateJwt(user, secretKey);
     }
 
     // This method handles user logout, invalidating the JWT.
@@ -73,13 +86,12 @@ public class UserService
     }
 
     // This method generates a JWT for the user.
-    private static string GenerateJwt(User user)
+    private static string GenerateJwt(User user, string secretKey)
     {
         // Create a JWT token handler
         var tokenHandler = new JwtSecurityTokenHandler();
         // Convert the secret key into a byte array
-        var hmac = new HMACSHA256();
-        var key = hmac.Key;
+        var key = Encoding.UTF8.GetBytes(secretKey);
         // Create a token descriptor with the user's information, expiry date, and signing credentials
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -89,7 +101,6 @@ public class UserService
                 new(ClaimTypes.Name, user.Email ?? string.Empty),
                 // Add a claim with the user's role
                 new(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User"),
-                // Add other claims as needed
             }),
             // Set the token to expire after 7 days
             Expires = DateTime.UtcNow.AddDays(7),
