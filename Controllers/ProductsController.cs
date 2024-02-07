@@ -20,7 +20,7 @@ public class ProductsController : ControllerBase
         _productService = productService ?? throw new ArgumentNullException(nameof(productService));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     // HTTP GET method to get a list of products with pagination
     [HttpGet]
     public async Task<IActionResult> Get(int pageNumber,int itemsPerPage)
@@ -67,7 +67,6 @@ public class ProductsController : ControllerBase
     }
 
     // HTTP DELETE method to delete a product by its ID
-    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
@@ -90,7 +89,6 @@ public class ProductsController : ControllerBase
     }
 
     // HTTP POST method to create a new product
-    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Product product)
     {
@@ -110,7 +108,6 @@ public class ProductsController : ControllerBase
     }
 
     // HTTP PUT method to update an existing product
-    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(string id,[FromBody] Product product)
     {

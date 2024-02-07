@@ -13,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add the MVC Controllers service to the DI container
 builder.Services.AddControllers();
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
 
 builder.Services.AddAuthentication(options =>
     {
@@ -21,19 +24,18 @@ builder.Services.AddAuthentication(options =>
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(o => {
-            o.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
-                ValidateIssuerSigningKey = true
-            };
-        });
-Console.WriteLine(builder.Configuration["Jwt:Key"]);
-
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+    }
+);
 // Configure MongoDB settings
 // Get the MongoDB configuration from appsettings.json and bind it to DbConfig
 builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBconfig"));
@@ -61,6 +63,7 @@ builder.Services.AddCors(opt =>
 // Build the application
 var app = builder.Build();
 
+// Use the CORS policy
 app.UseCors("CorsPolicy");
 
 // Configure the HTTP request pipeline.
@@ -75,11 +78,11 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP requests to HTTPS
 app.UseHttpsRedirection();
 
-// Use the authentication middleware in the pipeline
-app.UseAuthentication();
-
 // Use the authorization middleware in the pipeline
 app.UseAuthorization();
+
+// Use the authentication middleware in the pipeline
+app.UseAuthentication();
 
 // Map controller routes
 app.MapControllers();

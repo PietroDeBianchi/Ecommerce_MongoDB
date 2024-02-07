@@ -12,14 +12,13 @@ public class UserService
 {
     // _users is a MongoDB collection that contains the users.
     private readonly IMongoCollection<User> _users;
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration? _configuration;
 
 
-    // This constructor initializes the MongoDB collection with the one provided.
-    public UserService(IMongoCollection<User> user, IConfiguration configuration)
+    // This constructor initializes the collection with the one provided.
+    public UserService(IMongoCollection<User> user)
     {
         _users = user;
-        _configuration = configuration;
     }
 
     // This constructor initializes the MongoDB collection using the provided configuration options.
@@ -71,7 +70,7 @@ public class UserService
             throw new Exception("Invalid email or password");
         }
         // Get the secret key from the configuration
-        var secretKey = _configuration["Jwt:Key"] ?? throw new Exception("Secret key is missing");
+        var secretKey = _configuration?["Jwt:Key"] ?? throw new Exception("Secret key is missing");
         // Generate a JWT and return it
         return GenerateJwt(user, secretKey);
     }
