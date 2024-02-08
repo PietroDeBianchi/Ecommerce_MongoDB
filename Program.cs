@@ -18,6 +18,8 @@ builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBco
 builder.Services.AddSingleton<EmployeeService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<OrderService>();
+// https://shahedbd.medium.com/net-7-web-api-jwt-authentication-and-role-based-authorization-f2ff81f69cd4
+// https://www.youtube.com/watch?v=9IBNIbgMGdM&t=2s
 
 // Add services to enable API exploration and Swagger/OpenAPI generation
 builder.Services.AddEndpointsApiExplorer();

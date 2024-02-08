@@ -40,7 +40,6 @@ public class ProductService
         var existingProduct = await _products.Find(p => p.productCode == product.productCode).FirstOrDefaultAsync();
         if (existingProduct != null)
             throw new Exception("Product already exists");
-
         // Set default values for new product
         product.Id = ObjectId.GenerateNewId();
         // Insert new product
