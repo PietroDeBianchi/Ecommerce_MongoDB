@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Blogic.Services;
+using MongoDBTest.Models;
 
 namespace MongoDB.Controllers;
-
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class EmployeesController : ControllerBase
@@ -19,7 +20,6 @@ public class EmployeesController : ControllerBase
     }
 
     // HTTP GET method to get a list of all employees
-    [Authorize(Roles = "Admin")] // Apply authorization to the entire controller
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -30,7 +30,7 @@ public class EmployeesController : ControllerBase
 
             // If no employees are found, return No Content status
             if (allEmployees == null)
-                return NoContent(); // 204 No Content
+                return Ok(new List<Employee>());
 
             // If employees are found, return them with OK status
             return Ok(allEmployees);

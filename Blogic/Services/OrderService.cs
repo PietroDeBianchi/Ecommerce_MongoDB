@@ -72,13 +72,21 @@ public class OrderService
         return orderWithDetails;
     }
 
-    // DELETE order by ID
-    public async Task DeleteAsync(int id) => await _orders.DeleteOneAsync(e => e.orderNumber == id);
-
     // POST new order
-    public async Task CreateAsync(Order order) => await _orders.InsertOneAsync(order);
+    public async Task CreateAsync(Order order) => 
+        await _orders.InsertOneAsync(order);
 
     // PUT (update) order by ID
-    public async Task UpDateAsync(Order order) => await _orders.ReplaceOneAsync(e => e.orderNumber == order.orderNumber, order);
+    public async Task UpDateAsync(Order order) => 
+        await _orders.ReplaceOneAsync(e => e.orderNumber == order.orderNumber, order);
+
+    // DELETE order by ID
+    public async Task DeleteAsync(int id)
+    {
+        // Check if product already exists and throw exception if it does
+        var product = await _orders.Find(e => e.orderNumber == id).FirstOrDefaultAsync() ?? throw new Exception("Order not found");
+        // Delete product
+        await _orders.DeleteOneAsync(e => e.orderNumber == id);
+    }
 
 }

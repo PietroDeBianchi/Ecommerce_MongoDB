@@ -26,11 +26,12 @@ public class ProductsController : ControllerBase
         try
         {
             // Get all product from the service and paginate them
-            var allUsers = await _productService.GetAsync();
-            var result = PaginationHelper.Paginate(allUsers, pageNumber, itemsPerPage);
+            var allProducts = await _productService.GetAsync();
+            var result = PaginationHelper.Paginate(allProducts, pageNumber, itemsPerPage);
 
             if (result == null)
-                return NoContent();
+                return Ok(new List<Product>());
+
             // Return the result with OK status
             return Ok(result);
         }
@@ -64,27 +65,6 @@ public class ProductsController : ControllerBase
         }
     }
 
-    // HTTP DELETE method to delete a product by its ID
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
-    {
-        try
-        {
-            // Get the existing product from the service
-            var existingProduct = await _productService.GetIdAsync(id);
-
-            // Delete the product
-            await _productService.DeleteAsync(id);
-
-            // Return No Content status
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            // If an error occurs, return Internal Server Error status with the error message
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
 
     // HTTP POST method to create a new product
     [HttpPost]
@@ -113,6 +93,28 @@ public class ProductsController : ControllerBase
         {
             // Update the product
             await _productService.UpDateAsync(id, product);
+
+            // Return No Content status
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            // If an error occurs, return Internal Server Error status with the error message
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+    
+    // HTTP DELETE method to delete a product by its ID
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        try
+        {
+            // Get the existing product from the service
+            var existingProduct = await _productService.GetIdAsync(id);
+
+            // Delete the product
+            await _productService.DeleteAsync(id);
 
             // Return No Content status
             return NoContent();

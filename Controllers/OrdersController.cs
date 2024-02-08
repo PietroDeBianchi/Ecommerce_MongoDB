@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Utilities;
 using MongoDBTest.Blogic.Services;
 using MongoDBTest.Models;
 
 namespace MongoDB.Controllers;
-
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class OrdersController : ControllerBase
@@ -26,12 +27,13 @@ public class OrdersController : ControllerBase
         try
         {
             // Get all orders from the service and paginate them
-            var allUsers = await _orderService.GetAsync();
-            var result = PaginationHelper.Paginate(allUsers, pageNumber, itemsPerPage);
+            var allOrders = await _orderService.GetAsync();
+            var result = PaginationHelper.Paginate(allOrders, pageNumber, itemsPerPage);
 
             if (result == null)
-                return NoContent();
-            // Return the result with OK status
+                return Ok(new List<Order>());    
+                
+            // If employees are found, return them with OK status
             return Ok(result);
         }
         catch (Exception ex)

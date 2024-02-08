@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -18,7 +17,7 @@ public class UserService {
 
     public async Task<User> GetIdAsync(string id) => await _users.Find(u => u.Email == id).FirstOrDefaultAsync();
 
-    public async Task<User> CreateAsync(User user)
+    public async Task<User> RegisterAsync(User user)
     {
         // Check if product already exists and throw exception if it does
         var existingUser = await _users.Find(u => u.Email == user.Email).FirstOrDefaultAsync();

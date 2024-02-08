@@ -26,8 +26,8 @@ public class UserController : ControllerBase
             if (user.Email == null || user.Password == null)
                 return BadRequest("Email and password are required");
                 
-            User registerUser = await _userService.CreateAsync(user);
-            return Ok(registerUser);
+            User registerUser = await _userService.RegisterAsync(user);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -38,18 +38,23 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(string email, string password)
     {
-        // Authenticate the user
-        var logUser = await _userService.LogInAsync(email, password);
-        if (logUser == null)
+        try
         {
-            return Unauthorized("Invalid email or password");
+            // Authenticate the user
+            var logUser = await _userService.LogInAsync(email, password);
+            if (logUser == null)
+            {
+                return Unauthorized("Invalid email or password");
+            }
+            // Generate JWT token
+            var token = _jwtGenerator.GenerateJwtToken(logUser);
+            // Return the token to the client
+            return Ok(new { Token = token });       
         }
-
-        // Generate JWT token
-        var token = _jwtGenerator.GenerateJwtToken(logUser);
-
-        // Return the token to the client
-        return Ok(new { Token = token });
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 
 }

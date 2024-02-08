@@ -24,9 +24,6 @@ public class EmployeeService
     public async Task<Employee> GetIdAsync(int id) =>
         await _employees.Find(e => e.employeeNumber == id).FirstOrDefaultAsync();
 
-    // DELETE employee by ID
-    public async Task DeleteAsync(int id) =>
-        await _employees.DeleteOneAsync(e => e.employeeNumber == id);
 
     // POST new employee
     public async Task CreateAsync(Employee employee) =>
@@ -35,5 +32,14 @@ public class EmployeeService
     // PUT (update) employee by ID
     public async Task UpDateAsync(Employee employee) =>
         await _employees.ReplaceOneAsync(e => e.employeeNumber == employee.employeeNumber, employee);
+    
+    // DELETE employee by ID
+    public async Task DeleteAsync(int id)
+    {
+        // Check if product already exists and throw exception if it does
+        var employee = await _employees.Find(e => e.employeeNumber == id).FirstOrDefaultAsync() ?? throw new Exception("Employee not found");
+        // Delete employee
+        await _employees.DeleteOneAsync(e => e.employeeNumber == id);
+    }
 
 }

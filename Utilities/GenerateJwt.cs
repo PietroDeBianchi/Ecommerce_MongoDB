@@ -34,6 +34,7 @@ public class GenerateJwt
             Audience = audience,
             SigningCredentials = creds
         };
+        
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var stringToken = tokenHandler.WriteToken(token);
