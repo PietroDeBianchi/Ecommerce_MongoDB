@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
 using MongoDB.Utilities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MongoDB.Controllers;
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDBTest.Blogic.Services;
 
@@ -18,6 +19,7 @@ public class EmployeesController : ControllerBase
     }
 
     // HTTP GET method to get a list of all employees
+    [Authorize(Roles = "Admin")] // Apply authorization to the entire controller
     [HttpGet]
     public async Task<IActionResult> Get()
     {

@@ -1,6 +1,12 @@
 // Import necessary namespaces
 using MongoDBTest.Models;
 using MongoDBTest.Blogic.Services;
+using MongoDBTest.Blogic.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using Microsoft.OpenApi.Models;
 
 // Create a new WebApplication builder with the provided command-line arguments
 var builder = WebApplication.CreateBuilder(args);
@@ -18,13 +24,59 @@ builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBco
 builder.Services.AddSingleton<EmployeeService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<OrderService>();
-// https://shahedbd.medium.com/net-7-web-api-jwt-authentication-and-role-based-authorization-f2ff81f69cd4
-// https://www.youtube.com/watch?v=9IBNIbgMGdM&t=2s
+builder.Services.AddScoped<UserService>();
 
+// Configure JWT authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+    {
+        // options.SaveToken = true;
+        // options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
+            RoleClaimType = ClaimTypes.Role
+        };
+    }
+);
 // Add services to enable API exploration and Swagger/OpenAPI generation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT API", Version = "v1" });
 
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 // to add for CORS Policy access!
 builder.Services.AddCors(opt =>
 {
@@ -52,7 +104,9 @@ if (app.Environment.IsDevelopment())
 // Redirect HTTP requests to HTTPS
 app.UseHttpsRedirection();
 
-// Map controller routes
+// Becareful with the order of the following 3 lines
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 // Start the application
