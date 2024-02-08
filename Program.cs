@@ -23,7 +23,7 @@ builder.Services.Configure<DbConfig>(builder.Configuration.GetSection("MongoDBco
 builder.Services.AddSingleton<EmployeeService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<OrderService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<UserService>();
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
