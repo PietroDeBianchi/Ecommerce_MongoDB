@@ -21,8 +21,10 @@ public class User
     public bool IsAdmin { get; set; }
 
     [BsonElement("employeeNumber")]
+    [BsonIgnoreIfNull]
     public int? EmployeeNumber { get; set; }
 
     [BsonElement("customerNumber")]
+    [BsonIgnoreIfNull]
     public int? CustomerNumber { get; set; }
 }
